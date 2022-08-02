@@ -3,22 +3,17 @@
 ## 介绍
 一个简单的事件模型，实现事件的订阅与发布
 
-
-
 ## 使用
 ```html
 <script src="../eventEmitter.js"></script>
 ```
-
-
 
 ## API
 ```javascript
 const emitter = new EventEmitter()
 ```
 
-#### on
-
+### on
 添加事件，支持链式调用
 
 ```javascript
@@ -29,8 +24,7 @@ const emitter = new EventEmitter()
 emitter.on(eventName, listener)
 ```
 
-#### once
-
+### once
 添加事件，该事件仅被执行一次，支持链式调用
 
 ```javascript
@@ -41,8 +35,7 @@ emitter.on(eventName, listener)
 emitter.once(eventName, listener)
 ```
 
-#### off
-
+### off
 删除某一事件的监听器，支持链式调用
 
 ```javascript
@@ -53,8 +46,7 @@ emitter.once(eventName, listener)
 emitter.off(eventName, listener)
 ```
 
-#### allOff
-
+### allOff
 删除某一事件的所有监听器
 
 ```javascript
@@ -64,8 +56,7 @@ emitter.off(eventName, listener)
 emitter.allOff(eventName)
 ```
 
-#### emit
-
+### emit
 触发事件，支持链式调用
 
 ```javascript
@@ -76,11 +67,9 @@ emitter.allOff(eventName)
 emitter.emit(eventName, ...args)
 ```
 
-
-
 ## 示例
 
-#### 添加、触发、删除事件
+### 添加、触发、删除事件
 
 ```javascript
 // 创建实例
@@ -104,9 +93,7 @@ emitter.emit('blur') // 执行blur事件
 emitter.off('blur', foo) // 移除blur事件的 foo监听器
 ```
 
-
-
 ## 参考
-
 [EventEmitter.js](https://github.com/Olical/EventEmitter)
+
 [Wheels-EventEmitter.js](https://github.com/mqyqingfeng/EventEmitter)
