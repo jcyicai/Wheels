@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script src="../jcNew.js"></script>
+  <script>
+    // Person 构造函数
+    function Person(name) {
+      this.name = name
+    }
+
+    var person = JcNew(Person, 'Jason Chen') // 生成Person实例
+    console.log(person) // Person {name: 'Jason Chen'} 返回Person实例
+    console.log(person.name) // Jason Chen 返回Person实例 name属性值
+
+  </script>
+</body>
+
+</html>
