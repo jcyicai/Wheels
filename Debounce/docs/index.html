@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #app {
+            width: 100%;
+            height: 200px;
+            background: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">1</div>
+    <script>
+        var app = document.getElementById('app');
+
+        // 防抖原理  无论你触发多少次该事件，只会再设置N秒后才执行
+
+        // 第一版  缺点 func this会指向全局
+        function debounce1(func, wait) {
+            var timer;
+            return function () {
+                clearTimeout(timer)
+                timer = setTimeout(func, wait)
+            }
+        }
+
+        // 第二版 修改func this指向问题  单独调用func this会指向window  修改后指向app
+        function debounce2(func, wait) {
+            var timer;
+            return function () {
+                var context = this
+                clearTimeout(timer)
+                timer = setTimeout(function () {
+                    func.apply(context)
+                }, wait)
+            }
+        }
+
+        // 第三版 修改事件对象event 返回undefined问题
+        function debounce3(func, wait) {
+            var timer;
+            return function () {
+                var context = this
+                var args = arguments
+                clearTimeout(timer)
+                timer = setTimeout(function () {
+                    func.apply(context, args)
+                }, wait)
+            }
+        }
+
+        function foo(event) {
+            console.log(event)
+            console.log(this)
+        }
+
+        //app.onmousemove = debounce1(foo, 1000)  
+        //app.onmousemove = debounce2(foo, 1000) // 修复this指向问题
+        app.onmousemove = debounce3(foo, 1000)  // 修复event为undefined问题
+    </script>
+</body>
+
+</html>

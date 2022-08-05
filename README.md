@@ -7,3 +7,6 @@
 
 #### **2、[JcNew](https://github.com/chenyicai622/Wheels/tree/main/JcNew)**
 介绍：手写new方法
+
+#### **3、[Debounce](https://github.com/chenyicai622/Wheels/tree/main/Debounce)**
+介绍：手写防抖方法

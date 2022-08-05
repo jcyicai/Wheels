@@ -19,8 +19,6 @@ const person = JcNew(constructor, ...args)
 
 ## 示例
 
-### 添加、触发、删除事件
-
 ```javascript
 // Person 构造函数
 function Person(name) {
