@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #app {
+            width: 100%;
+            height: 200px;
+            background: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">1</div>
+    <script>
+        var app = document.getElementById('app');
+        
+        // 节流原理 连续触发事件，每隔一段时间，只执行一次该事件
+
+        // 第一版
+        function throttle(func, wait) {
+            var context, args;
+            var prev = 0;
+            return function () {
+                var now = +new Date()
+                context = this
+                args = arguments
+                if (now - prev > wait) {
+                    func.apply(context, args)
+                    prev = now
+                }
+            }
+        }
+
+        // 第二版
+        function throttle1(func, wait) {
+            var context, args;
+            var timer;
+            return function () {
+                context = this
+                args = arguments
+                if (!timer) {
+                    timer = setTimeout(function () {
+                        timer = null
+                        func.apply(context, args)
+                    }, wait)
+                }
+            }
+        }
+
+        function cb() {
+            console.log('1')
+        }
+
+        //app.onmousemove = throttle(cb, 1000)
+        app.onmousemove = throttle1(cb, 1000)
+
+    </script>
+</body>
+
+</html>

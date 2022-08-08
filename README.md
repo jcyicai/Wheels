@@ -10,3 +10,6 @@
 
 #### **3、[Debounce](https://github.com/chenyicai622/Wheels/tree/main/Debounce)**
 介绍：手写防抖方法
+
+#### **4、[Throttle](https://github.com/chenyicai622/Wheels/tree/main/Throttle)**
+介绍：手写节流方法
