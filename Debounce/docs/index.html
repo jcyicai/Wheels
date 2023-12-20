@@ -1,70 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-        #app {
-            width: 100%;
-            height: 200px;
-            background: #ccc;
-        }
+      #app {
+        width: 100%;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+        color: #fff;
+        background-color: #444;
+        font-size: 30px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div id="app">1</div>
+  <body>
+    <div id="app"></div>
+    <button id="btn">取消</button>
     <script>
-        var app = document.getElementById('app');
+      var count = 1
+      var app = document.getElementById('app')
+      var btn = document.getElementById('btn')
 
-        // 防抖原理  无论你触发多少次该事件，只会再设置N秒后才执行
+      // app.onmousemove = debounce1(foo, 1000)
+      // app.onmousemove = debounce2(foo, 1000) // 修复 this 指向问题
+      // app.onmousemove = debounce3(foo, 1000) // 修复 event 为 undefined 问题
+      // app.onmousemove = debounce4(foo, 1000, true) // 立即执行 等到停止触发 N 秒后，才可以重新触发执行
+      var setAction = debounce6(foo, 5000, true) // 取消
 
-        // 第一版  缺点 func this会指向全局
-        function debounce1(func, wait) {
-            var timer;
-            return function () {
-                clearTimeout(timer)
-                timer = setTimeout(func, wait)
+      app.onmousemove = setAction
+
+      btn.addEventListener('click', function () {
+        setAction.cancel()
+      })
+
+      function foo(event) {
+        console.log(event)
+        console.log(this)
+        app.innerHTML = count++
+      }
+
+      // 防抖原理  无论你触发多少次该事件，只会再设置 N 秒后才执行
+
+      // 第一版  缺点 func this 会指向全局
+      function debounce1(func, wait) {
+        var timer
+        return function () {
+          clearTimeout(timer)
+          timer = setTimeout(func, wait)
+        }
+      }
+
+      // 第二版 修改 func this 指向问题  单独调用 func this 会指向 window  修改后指向 app
+      function debounce2(func, wait) {
+        var timer
+        return function () {
+          var context = this
+          clearTimeout(timer)
+          timer = setTimeout(function () {
+            func.apply(context)
+          }, wait)
+        }
+      }
+
+      // 第三版 修改事件对象 event 返回 undefined 问题
+      function debounce3(func, wait) {
+        var timer
+        return function () {
+          var context = this
+          var args = arguments
+          clearTimeout(timer)
+          timer = setTimeout(function () {
+            func.apply(context, args)
+          }, wait)
+        }
+      }
+
+      // 第四版 立即执行 等到停止触发 N 秒后，才可以重新触发执行
+      function debounce4(func, wait, immediate) {
+        var timer
+
+        return function () {
+          var context = this
+          var args = arguments
+
+          if (timer) {
+            clearTimeout(timer)
+          }
+
+          if (immediate) {
+            var callNow = !timer
+
+            timer = setTimeout(function () {
+              timer = null
+            }, wait)
+
+            if (callNow) {
+              func.apply(context, args)
             }
+          } else {
+            timer = setTimeout(function () {
+              func.apply(context, args)
+            }, wait)
+          }
         }
+      }
 
-        // 第二版 修改func this指向问题  单独调用func this会指向window  修改后指向app
-        function debounce2(func, wait) {
-            var timer;
-            return function () {
-                var context = this
-                clearTimeout(timer)
-                timer = setTimeout(function () {
-                    func.apply(context)
-                }, wait)
+      // 第五版 返回值 当设置 immediate = true 时，func 可能存在返回值
+      function debounce5(func, wait, immediate) {
+        var timer, result
+
+        return function () {
+          var context = this
+          var args = arguments
+
+          if (timer) {
+            clearTimeout(timer)
+          }
+
+          if (immediate) {
+            var callNow = !timer
+
+            timer = setTimeout(function () {
+              timer = null
+            }, wait)
+
+            if (callNow) {
+              result = func.apply(context, args)
             }
-        }
+          } else {
+            timer = setTimeout(function () {
+              func.apply(context, args)
+            }, wait)
+          }
 
-        // 第三版 修改事件对象event 返回undefined问题
-        function debounce3(func, wait) {
-            var timer;
-            return function () {
-                var context = this
-                var args = arguments
-                clearTimeout(timer)
-                timer = setTimeout(function () {
-                    func.apply(context, args)
-                }, wait)
+          return result
+        }
+      }
+
+      // 第六版 取消
+      // 比如 immediate = true 延迟 10秒 才执行，但是想通过按钮先取消防抖，就能再次触发立即执行了
+      function debounce6(func, wait, immediate) {
+        var timer, result
+
+        var debounced = function () {
+          var context = this
+          var args = arguments
+
+          if (timer) {
+            clearTimeout(timer)
+          }
+
+          if (immediate) {
+            var callNow = !timer
+
+            timer = setTimeout(function () {
+              timer = null
+            }, wait)
+
+            if (callNow) {
+              result = func.apply(context, args)
             }
+          } else {
+            timer = setTimeout(function () {
+              func.apply(context, args)
+            }, wait)
+          }
+
+          return result
         }
 
-        function foo(event) {
-            console.log(event)
-            console.log(this)
+        debounced.cancel = function () {
+          clearTimeout(timer)
+          timer = null
         }
 
-        //app.onmousemove = debounce1(foo, 1000)  
-        //app.onmousemove = debounce2(foo, 1000) // 修复this指向问题
-        app.onmousemove = debounce3(foo, 1000)  // 修复event为undefined问题
+        return debounced
+      }
     </script>
-</body>
-
+  </body>
 </html>
